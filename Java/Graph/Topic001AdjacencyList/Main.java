@@ -3,18 +3,18 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         /*
-         * Adjacency List implementation of Undirected Graph         * 
+         * Adjacency List implementation of Undirected Graph
          */
 
         //AdjacencyListMapImplementation adjacencyList = null;
-        AdjacencyListArrayImplementation adjacencyList = null;
+        AdjacencyListMapImplementation adjacencyList = null;
         Scanner scanner = new Scanner(System.in);
 
         // Input number of vertex.
         System.out.printf("Number of vertex: ");
         int numOfVertex = scanner.nextInt();
 
-        adjacencyList = new AdjacencyListArrayImplementation(numOfVertex);
+        adjacencyList = new AdjacencyListMapImplementation(numOfVertex);
 
         // Input: number of edges.        
         System.out.printf("Number of Edges: ");
