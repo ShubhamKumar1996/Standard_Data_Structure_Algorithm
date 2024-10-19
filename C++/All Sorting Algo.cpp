@@ -61,15 +61,22 @@ void selectionSort(vector<int>&arr, int n) {
 
 void insertionSort(vector<int>&arr, int n) {
 	for(int i=1;i<n;i++) {
-		int j = i-1, item = arr[i];
+		int j;
+		int currNum = arr[i];
 		for(j=i-1;j>=0;j--) {
-			if(arr[j] > item) {
+			if(arr[j] > currNum) {
 				arr[j+1] = arr[j];
 			} else {
 				break;
 			}
 		}
-		arr[j+1] = item;
+		/*
+            Possible Scenarios:
+            1. currNum was greatest compared to sorted elements -> then j will still be equal to (i-1) -> hence j + 1 will be currIndex -> hence arr[j+1] = currNum already.
+            2. currNum is smallest element compared to sorted elements -> j = -1 -> then arr[j + 1] = currNum will work.
+            3. CurrNum fall in between then j is pointing to element smaller then currNum. Hence we should modify element at next position -> arr[j + 1] = currNum. 
+        */
+		arr[j+1] = currNum;
 	}
 }
 
@@ -84,54 +91,52 @@ void bubbleSort(vector<int>&arr, int n) {
 	}
 }
 
-void merge(vector<int>&arr, int start, int end, int n) {
-	if(start >= end) {
-		return;
-	}
-	int mid = start + (end-start)/2;
-	int i = start, j = mid + 1, k = start;
-	vector<int>result(n);
-	while(i<=mid && j<=end) {
-		if(arr[i] < arr[j]) {
-			result[k++] = arr[i++];
-		} else {
-			result[k++] = arr[j++];
-		}
-	}
-	while(i<=mid) {
-		result[k++] = arr[i++];
-	}
-	while(j<=end) {
-		result[k++] = arr[j++];
-	}
-	for(int i=start;i<=end;i++) {
-		arr[i] = result[i];
-	}
-	return;
+void merge(vector<int>&arr, int start, int mid, int end) {
+    int left = start;
+    int right = mid + 1;
+    std::vector<int>result;
+
+    while(left <= mid && right <= end) {
+        int num = (nums[left] < nums[right]) ? nums[left++] : nums[right++];
+        result.push_back(num);
+    }
+
+    while(left<=mid) {
+        result.push_back(nums[left++]);
+    }
+
+    while(right <= end) {
+        result.push_back(nums[right++]);
+    }
+
+    for(int i=start;i<=end;i++) {
+        nums[i] = result[i-start];
+    }
 }
-void mergeSort(vector<int>&arr, int start, int end, int n) {
+void mergeSort(vector<int>&arr, int start, int end) {
 	if(start < end) {
 		int mid = start + (end-start)/2;
-		mergeSort(arr, start, mid, n);
-		mergeSort(arr, mid+1, end, n);
-		merge(arr, start, end, n);
+		mergeSort(arr, start, mid);
+		mergeSort(arr, mid+1, end);
+		merge(arr, start, mid, end);
 	}
 }
 
-int partition(vector<int>&arr, int start, int end) {
-	if(start > end) {
-		return -1 ;
-	}
-	int pivot = arr[end];
-	for(int i=start;i<=end;i++) {
-		if(arr[i] > pivot) {
-			swap(arr[i], arr[end]);
-			i--; end--;
-		}
-		debug(arr);
-	}
-	arr[end] = pivot;
-	return end;
+int partition(vector<int>&nums, int start, int end) {
+    int pivotElement = nums[start];
+    int left = start + 1;
+    int right = end;
+    while(left <= right) {
+        if(nums[left] <= pivotElement) {
+            left++;
+        } else {
+            std::swap(nums[left], nums[right]);
+            right--;
+        }
+    }
+
+    std::swap(nums[left-1], nums[start]);
+    return left-1;
 }
 void quickSort(vector<int>&arr, int start, int end) {
 	if(start >= end) {
@@ -203,7 +208,7 @@ void fun() {
 	// selectionSort(arr, n);
 	// insertionSort(arr, n);
 	// bubbleSort(arr, n);
-	// mergeSort(arr, 0, n-1, n);
+	// mergeSort(arr, 0, n-1);
 	// quickSort(arr, 0, n-1);
 	// arr = heapSort(arr, n);
 	countingSort(arr, n);
